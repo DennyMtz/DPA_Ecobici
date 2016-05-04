@@ -65,3 +65,8 @@ La data scrapeda debe ir en una carpeta /data/raw de un data lake (HDFS/S3), hay
 ![alt text](https://blog.diegovalle.net/images/posts/hoyodesmog/tufte_o3.png "Logo Title Text 1")
 
 
+![alt text](https://blog.diegovalle.net/images/posts/hoyodesmog/peak_hours.png "Logo Title Text 1")
+
+
+
+
