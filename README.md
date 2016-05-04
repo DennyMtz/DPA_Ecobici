@@ -30,8 +30,8 @@ El repositorio tiene como objetivo desarrollar la infraestructura de datos para 
    * Scraping
    * Cleaning
    * Transform
-    * Calcular duracion del viaje y distancia 
-    * Agregar viajes a nivel ciloestacion / hora - mantener proporcion de genero y de edad  
+     * Calcular duracion del viaje y distancia 
+     * Agregar viajes a nivel ciloestacion / hora - mantener proporcion de genero y de edad  
    * EDA
    * 
 
