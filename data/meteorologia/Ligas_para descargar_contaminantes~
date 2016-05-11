@@ -1,0 +1,15 @@
+http://148.243.232.112:8080/opendata/catalogos/cat_estacion.csv
+
+http://148.243.232.112:8080/opendata/anuales_horarios_gz/meteorología_2016.csv.gz
+
+Promedio por Hora
+
+http://www.aire.df.gob.mx/estadisticas-consultas/concentraciones/respuesta.php?qtipo=HORARIOS&parametro=o3&anio=2015&qmes=09
+
+Maximos Diarios
+
+http://www.aire.df.gob.mx/estadisticas-consultas/concentraciones/respuesta.php?qtipo=MAXIMOS&parametro=o3&anio=2015&qmes=
+
+Minimos Diarios
+
+http://www.aire.df.gob.mx/estadisticas-consultas/concentraciones/respuesta.php?qtipo=MINIMOS&parametro=o3&anio=2015&qmes=
