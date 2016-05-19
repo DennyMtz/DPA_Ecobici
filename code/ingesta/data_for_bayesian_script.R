@@ -4,8 +4,10 @@ library(lubridate)
 library(dplyr)
 library(dummies)
 
-#setwd("/home/denny/itam/estadistica_multivariada/proyecto_final/data/ecobici/viajes")
-setwd("/home/denny/github/DPA_Ecobici/data/ecobici/viajes")
+
+path_to_project = "/home/stuka/itam2/arqui/DPA_Ecobici/"
+#setwd("/home/stuka/itam2/arqui/DPA_Ecobici/data/ecobici/viajes")
+setwd(paste0(path_to_project,"data/ecobici/viajes"))
 
 ####Cargar 2015
 filename <- dir(".")[grep(".csv",dir("."))]
@@ -35,8 +37,8 @@ ecobici$dur_via <- minute(as.period(difftime(ecobici$Fecha_hora_arribo,ecobici$F
 ecobici<-ecobici[!(ecobici$dur_via=="0"),]
 
 ### Cargar datos distancias cicloestaciones 
-#setwd("/home/denny/itam/estadistica_multivariada/proyecto_final/data/ecobici/estaciones/")
-setwd("/home/denny/github/DPA_Ecobici/data/ecobici/estaciones")
+#setwd("/home/stuka/itam2/arqui/DPA_Ecobici/data/ecobici/estaciones/")
+setwd(paste0(path_to_project,"data/ecobici/estaciones"))
 dtype <- c("character","character","numeric")
 ecobici_distancias <- read.csv('distancias_estaciones_metros.csv',colClasses = dtype)
 names(ecobici_distancias) <- c("Estacion_origen","Estacion_destino","Distancia_metros")
@@ -77,8 +79,8 @@ master <- inner_join(viajes_sem_hora_salidas_2, viajes_sem_hora_llegadas_2, by=c
 
 
 ### Cargar regiones de estaciones
-setwd("/home/denny/itam/estadistica_multivariada/proyecto_final/data/ecobici/regiones/")
-setwd("/home/denny/github/DPA_Ecobici/data/ecobici/regiones")
+setwd(paste0(path_to_project,"data/ecobici/regiones/"))
+setwd(paste0(path_to_project,"data/ecobici/regiones"))
 dtype <- c("character", "character")
 ecobici_regiones <- read.csv('estacion_region.csv',colClasses = dtype)
 names(ecobici_regiones) <- c("estacion", "regiones")
@@ -108,3 +110,14 @@ c <- as.data.frame(dummy(master$hora))
 names(c) <- gsub("hora)", "hora_", names(c))
 master <- cbind(master,c)
 
+
+##### Limpieza de variables temporales para no matar la memoria
+rm(a,b,c,ecobici,ecobici_regiones,viajes_sem_hora_llegadas_2,viajes_sem_hora_llegadas,viajes_sem_hora_salidas_2,viajes_sem_hora_salidas,dtype,filename,filename_2015)
+
+#### Cambiar estacion a entero
+master$estacion <- as.integer(master$estacion)
+#### Cargar variable y emulada
+var_y <- tbl_df(read.csv('../ecobici_variable_y_emulada_2015.csv'))
+### Pegar campos flujo_abs, maxcapacity y flujo_rel a la matriz master por estacion, fecha, dia semana y hora
+master <- left_join(master,var_y,by=c("estacion"="estacion","dia_fecha"="dia_fecha","dia_wd"="wday","hora"="hora"))
+write.table(master, "../ecobici_master_var_y_2015.csv", sep = ",", col.names = TRUE, row.names = FALSE)
