@@ -124,6 +124,40 @@ data$NO2 <- NULL
 data$SO2 <- NULL
 names(data) <- c("date","MAX_DIA_O3","MAX_DIA_PM10")
 contaminantes_slim <- left_join(contaminantes_slim,data,by=c("date"="date"))
-write.table(contaminantes_slim, "../ecobici_contaminantes_2015.csv", sep = ",", col.names = TRUE, row.names = FALSE)
-################################### METEOROLOGIA
 
+################################### METEOROLOGIA
+setwd(paste0(path_to_project,"data/meteorologia/"))
+dir()
+zz=gzfile('meteorología_2015.csv.gz','rt')  
+meteorologia=read.csv(zz,header=T,skip=10) 
+head(meteorologia,20)
+stations_of_interest <- c("HGM","MGH","BJU")
+meteorologia <- filter(meteorologia,id_station %in% stations_of_interest)
+
+glimpse(meteorologia)
+meteorologia$unit <- NULL
+meteorologia$date = as.character(meteorologia$date)
+meteorologia$date <-  parse_date_time(meteorologia$date, "%d/%m/%Y %H:%M")
+meteorologia <- filter(meteorologia,!is.na(date))
+
+
+meteorologia_horario <- meteorologia %>% 
+  group_by(date, id_parameter) %>% 
+  summarise(prom = ifelse(all(is.na(value)),NA,base::mean(value, na.rm = TRUE))) 
+
+meteorologia_horario <- meteorologia_horario %>% spread(id_parameter,prom)
+meteorologia_horario <- (meteorologia_horario %>% 
+                         filter(wday(date)>=2 & wday(date)<=6 & hour(date)>=6 & hour(date)<=11))
+
+meteorologia_max <- meteorologia %>% 
+  group_by(as_date(date), id_parameter) %>% 
+  summarise(max = ifelse(all(is.na(value)),NA,base::max(value, na.rm = TRUE))) 
+meteorologia_max <- meteorologia_max %>% spread(id_parameter,max)
+head(meteorologia_max)
+View(meteorologia_max)
+names(meteorologia_max) <- c("fecha","MAX_DIA_RH","MAX_DIA_TMP","MAX_DIA_WDR","MAX_DIA_WSP")
+head(contaminantes_slim)
+final <- left_join(contaminantes_slim,meteorologia_horario,by=c("fecha_hora"="date"))
+head(final)
+final <- left_join(final,meteorologia_max,by=c("date"="fecha"))
+write.table(final, "../ecobici_contaminantes_meteorologia_2015.csv", sep = ",", col.names = TRUE, row.names = FALSE)
