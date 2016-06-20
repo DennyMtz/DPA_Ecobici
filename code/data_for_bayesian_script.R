@@ -95,7 +95,10 @@ master <- left_join(viajes_sem_hora_salidas, viajes_sem_hora_llegadas, by=c("est
 rm(ecobici)
 
 
-### Cargar regiones de estaciones
+
+
+
+# ### Cargar regiones de estaciones
 setwd(paste0(path_to_project,"data/ecobici/regiones/"))
 dtype <- c("character", "character")
 ecobici_regiones <- read.csv('estacion_region.csv',colClasses = dtype)
@@ -104,19 +107,19 @@ names(ecobici_regiones) <- c("estacion", "regiones")
 m_final<- data.frame()
 m_final <- left_join(matrix, master, by=c("y"="estacion","date"= "date_retiro", "hour"="hora"))
 m_final$dia_wd <- NULL
-#QUEDARON NAs POR LAS ESTACIONES QUE NO TUVIERON MOVIMIENTO EN ESAS HORAS, SE RELLENAN DE CEROS
-m_final <-m_final %>%  
-  mutate(viajes_retiro = ifelse(is.na(viajes_retiro),0,viajes_retiro)) %>%
-  mutate(edad_prom = ifelse(is.na(edad_prom),0,edad_prom)) %>%
-  mutate(prop_fem = ifelse(is.na(prop_fem),0,prop_fem)) %>%
-  mutate(duracion_prom = ifelse(is.na(duracion_prom),0,duracion_prom)) %>%
-  mutate(distancia_prom = ifelse(is.na(distancia_prom),0,distancia_prom)) %>%
-  mutate(viajes_arribo = ifelse(is.na(viajes_arribo),0,viajes_arribo))
-  
-m_final <- left_join(m_final,ecobici_regiones,by=c("y"="estacion"))
-# Para corroborar porque hay NAs en regiones, son las regiones 1001, 1002 y 1003, eliminare estas filas
-m_final[is.na(m_final$regiones),] #en este paso tenemos 695,304, y tenemos 12 filas con NAs
-m_final <- m_final[is.na(m_final$regiones)==FALSE,] #quedan 690,606
+# #QUEDARON NAs POR LAS ESTACIONES QUE NO TUVIERON MOVIMIENTO EN ESAS HORAS, SE RELLENAN DE CEROS
+# m_final <-m_final %>%  
+#   mutate(viajes_retiro = ifelse(is.na(viajes_retiro),0,viajes_retiro)) %>%
+#   mutate(edad_prom = ifelse(is.na(edad_prom),0,edad_prom)) %>%
+#   mutate(prop_fem = ifelse(is.na(prop_fem),0,prop_fem)) %>%
+#   mutate(duracion_prom = ifelse(is.na(duracion_prom),0,duracion_prom)) %>%
+#   mutate(distancia_prom = ifelse(is.na(distancia_prom),0,distancia_prom)) %>%
+#   mutate(viajes_arribo = ifelse(is.na(viajes_arribo),0,viajes_arribo))
+#   
+# m_final <- left_join(m_final,ecobici_regiones,by=c("y"="estacion"))
+# # Para corroborar porque hay NAs en regiones, son las regiones 1001, 1002 y 1003, eliminare estas filas
+#m_final[is.na(m_final$regiones),] #en este paso tenemos 695,304, y tenemos 12 filas con NAs
+#m_final <- m_final[is.na(m_final$regiones)==FALSE,] #quedan 690,606
 
 
 #PARA CREAR DUMMIES DE REGIONES
